@@ -18,7 +18,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/dev": {
-        target: "http://172.16.10.194:3000",
+        target: "http://localhost:3000",
         rewrite: (path) => path.replace(/^\/dev/, ""),
       },
     },
