@@ -4,6 +4,8 @@ import axios, {
   InternalAxiosRequestConfig,
 } from "axios";
 import { ElMessage, ElLoading } from "element-plus";
+import router from "@/router";
+import { Storage } from "@/utils/storage";
 const loadingInstance = ElLoading.service;
 let requestCount = 0;
 const showLoading = () => {
@@ -56,9 +58,8 @@ service.interceptors.request.use(
     const { loading = true, isToken = true } = config;
 
     if (loading) showLoading();
-    if (localStorage.getItem("token") && !isToken) {
-      config.headers["Authorization"] =
-        "Bearer " + localStorage.getItem("token"); // 让每个请求携带自定义token 请根据实际情况自行修改
+    if (Storage.get("token") && isToken) {
+      config.headers["Authorization"] = "Bearer " + Storage.get("token"); // 让每个请求携带自定义token 请根据实际情况自行修改
     }
 
     return config;
@@ -80,9 +81,10 @@ service.interceptors.response.use(
         message: data.describe,
         type: "error",
       });
-      if (data.code === 401) {
+      if (data.code === 401 || data.code === 400) {
         //登录状态已过期.处理路由重定向
-        console.log("loginOut");
+        Storage.remove("token");
+        router.push("/login");
       }
       throw new Error(data.describe);
     }

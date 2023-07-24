@@ -45,6 +45,8 @@ import { reactive, ref, onMounted } from "vue";
 import { login } from "@/http/login";
 import { LoginVo } from "@/http/login/types/login.vo";
 import { Storage } from "@/utils/storage";
+import { useRouter } from "vue-router";
+const router = useRouter()
 const formLogin = reactive<LoginVo>({ username: "", password: "" });
 const loginRules = reactive({
   username: [{ required: true, message: "用户名不可为空", trigger: "blur" }],
@@ -54,6 +56,7 @@ const loginRules = reactive({
 const handleLogin = async () => {
   const { data } = await login(formLogin);
   Storage.set<string>("token", data);
+  router.push("/")
   if (isRemember.value) {
     rememberPassword(formLogin)
     return
@@ -77,6 +80,9 @@ const getRememberAccount = () => {
   formLogin.password = userAccount.password
   isRemember.value = true
 }
-onMounted(getRememberAccount)
+onMounted(() => {
+  getRememberAccount()
+  if (Storage.get("token")) router.push("/")
+})
 
 </script>
