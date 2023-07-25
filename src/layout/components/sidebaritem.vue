@@ -7,7 +7,7 @@
         <sidebaritem v-for="i in props.item.children" :key="i.id" :item="i"></sidebaritem>
     </el-sub-menu>
     <el-menu-item v-else :index="props.item.path">
-        <component class="w-[15px] mr-2" :is="props.item.icon" /> <span>{{ props.item.name }}</span>
+        <component class="w-[15px] mr-2 ml-1" :is="props.item.icon" /> <span>{{ props.item.name }}</span>
     </el-menu-item>
 </template>
 

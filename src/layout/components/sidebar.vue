@@ -18,13 +18,8 @@ import home from "@/store"
 import { useRouter } from "vue-router";
 const router = useRouter()
 const homeStore = home()
-
-
 const getPath = (v: any, d: any) => {
-
-
     router.push(`/${d.join("/")}`)
-
 }
 </script>
 <style>

@@ -2,25 +2,7 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 import home from "@/store";
 import { nextTick } from "vue";
 import { filterRoute } from "@/utils/filterRoute";
-import { loadView } from "@/utils/filterRoute";
-const modules = import.meta.glob("../views/**/*.vue");
-console.log(modules);
-
-// const routes: RouteRecordRaw[] = [
-//   {
-//     path: "/",
-//     name: "Layout",
-//     component: () =>
-//       import(/* webpackChunkName: "Layout" */ "../layout/index.vue"),
-//   },
-//   {
-//     path: "/login",
-//     name: "Login",
-//     component: () =>
-//       import(/* webpackChunkName: "login" */ "../views/login.vue"),
-//   },
-// ];
-
+import { filterBreadCrumb } from "@/utils/filterBreadCrumb";
 const router = createRouter({
   history: createWebHashHistory(),
   scrollBehavior(to, from, savedPosition) {
@@ -49,17 +31,21 @@ const router = createRouter({
     },
   ],
 });
-
+const writeLists = ["login"];
 router.beforeEach(async (to, from, next) => {
-  if (to.name === "login") {
+  console.log(to);
+
+  if (writeLists.includes(to.name as string)) {
     next();
     return;
   }
   await nextTick();
   const homeStore = home();
-  console.log(homeStore.menuList.length);
 
   if (homeStore.menuList.length) {
+    homeStore.$patch({
+      breadcrumbs: filterBreadCrumb(to.path, homeStore.menuList),
+    });
     next();
     return;
   }
@@ -68,19 +54,6 @@ router.beforeEach(async (to, from, next) => {
   const routers = filterRoute(data);
   console.log(routers);
   routers.forEach((route: RouteRecordRaw) => {
-    // console.log(loadView("child_1_1"));
-    // router.addRoute("Layout", {
-    //   name: "aa",
-    //   path: "aa",
-    //   children: [
-    //     {
-    //       path: "child_1_1",
-    //       name: "子菜单1",
-    //       component: loadView("child_1_1") as any,
-    //     },
-    //   ],
-    // });
-
     router.addRoute("Layout", route);
   });
 
