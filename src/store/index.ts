@@ -2,12 +2,13 @@ import { defineStore } from "pinia";
 import { getMenuList } from "@/http/menu/index";
 import router from "@/router";
 import { MenuVo } from "@/http/menu/types/menu.vo";
-import { Breadcrumb } from "./types";
+import { Breadcrumb, NavTags } from "./types";
 
 type StoreState = {
   isCollapse: boolean;
   menuList: MenuVo[];
   breadcrumbs: Breadcrumb[];
+  navTags: NavTags[];
 };
 export default defineStore("home", {
   state: (): StoreState => {
@@ -15,6 +16,7 @@ export default defineStore("home", {
       isCollapse: false,
       menuList: [],
       breadcrumbs: [],
+      navTags: [{ name: "首页", path: "/" }],
     };
   },
   actions: {
@@ -23,8 +25,11 @@ export default defineStore("home", {
       this.menuList = data;
       return data;
     },
-    resetRouter() {
-      router.replace(router.options.history.location);
+    addTags(tag: NavTags) {
+      const isRepeat = this.navTags.find((item) => item.name === tag.name);
+
+      isRepeat ||
+        this.navTags.push({ name: tag.name as string, path: tag.path });
     },
   },
 });

@@ -3,6 +3,7 @@ import home from "@/store";
 import { nextTick } from "vue";
 import { filterRoute } from "@/utils/filterRoute";
 import { filterBreadCrumb } from "@/utils/filterBreadCrumb";
+
 const router = createRouter({
   history: createWebHashHistory(),
   scrollBehavior(to, from, savedPosition) {
@@ -15,7 +16,7 @@ const router = createRouter({
   routes: [
     {
       path: "/",
-      name: "Layout",
+      name: "首页",
       component: () =>
         import(/* webpackChunkName: "Layout" */ "../layout/index.vue"),
     },
@@ -33,8 +34,6 @@ const router = createRouter({
 });
 const writeLists = ["login"];
 router.beforeEach(async (to, from, next) => {
-  console.log(to);
-
   if (writeLists.includes(to.name as string)) {
     next();
     return;
@@ -46,15 +45,15 @@ router.beforeEach(async (to, from, next) => {
     homeStore.$patch({
       breadcrumbs: filterBreadCrumb(to.path, homeStore.menuList),
     });
+    homeStore.addTags({ name: to.name as string, path: to.path });
+
     next();
     return;
   }
   const data = await homeStore.GenerateRoutes();
-
   const routers = filterRoute(data);
-  console.log(routers);
   routers.forEach((route: RouteRecordRaw) => {
-    router.addRoute("Layout", route);
+    router.addRoute("首页", route);
   });
 
   next({ ...to, replace: true });

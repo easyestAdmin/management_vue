@@ -13,7 +13,7 @@
 </template>
 
 <script lang='ts' setup>
-import sidebaritem from "./sidebaritem.vue";
+import sidebaritem from "@/components/sidebaritem/index.vue";
 import home from "@/store"
 import { useRouter } from "vue-router";
 const router = useRouter()
