@@ -1,6 +1,5 @@
 import { defineStore } from "pinia";
 import { getMenuList } from "@/http/menu/index";
-import router from "@/router";
 import { MenuVo } from "@/http/menu/types/menu.vo";
 import { Breadcrumb, NavTags } from "./types";
 

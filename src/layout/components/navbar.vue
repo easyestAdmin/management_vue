@@ -6,10 +6,7 @@
     </div>
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item
-        v-for="item in homeStore.breadcrumbs"
-        :to="item.path ? { path: item.path } : ''"
-      >
+      <el-breadcrumb-item v-for="item in homeStore.breadcrumbs" :to="item.path ? { path: item.path } : ''">
         {{ item.name }}
       </el-breadcrumb-item>
     </el-breadcrumb>
@@ -18,27 +15,14 @@
   <div class="shadow-sm py-1">
     <el-scrollbar>
       <div class="flex">
-        <el-tag
-          @contextmenu.prevent="openMenu($event, item.path)"
-          v-for="(item, index) in homeStore.navTags"
-          @click="handelTo(item)"
-          :key="item.name"
-          class="ml-2 cursor-pointer flex-shrink-0"
-          :effect="currentPath === item.path ? 'dark' : ''"
-          type="primary"
-          :closable="item.path != '/'"
-          @close="handleClose(index, item.path)"
-        >
+        <el-tag @contextmenu.prevent="openMenu($event, item.path)" v-for="(item, index) in homeStore.navTags"
+          @click="handelTo(item)" :key="item.name" class="ml-2 cursor-pointer flex-shrink-0"
+          :effect="currentPath === item.path ? 'dark' : ''" type="primary" :closable="item.path != '/'"
+          @close="handleClose(index, item.path)">
           {{ item.name }}
           <teleport to="body">
-            <tagsview
-              v-if="isTagView && currentTagPath === item.path"
-              @closeTagView="isTagView = false"
-              :tag="item"
-              class="w-[100px] fixed"
-              :style="tagViewStyle"
-              @closeCur="handleClose(index, item.path)"
-            />
+            <tagsview v-if="isTagView" @closeTagView="isTagView = false" :tag="item" class="w-[100px] fixed"
+              :style="tagViewStyle" @closeCur="handleClose(index, item.path)" />
           </teleport>
         </el-tag>
       </div>
@@ -76,21 +60,19 @@ const handelTo = (item: any) => {
 
 const handleClose = (index: number, path: string) => {
   homeStore.navTags.splice(index, 1);
-  console.log(path, currentPath.value);
 
   if (path === currentPath.value) {
     const length = homeStore.navTags.length;
     length && router.push(homeStore.navTags[length - 1].path);
   }
 };
-const tagViewStyle = ref({});
-const currentTagPath = ref();
+
 
 const listener = () => {
   isTagView.value = false;
   document.removeEventListener("click", listener);
 };
-
+const tagViewStyle = ref({});
 const openMenu = (e: any, path: string) => {
   isTagView.value = true;
   document.addEventListener("click", listener);
@@ -99,6 +81,5 @@ const openMenu = (e: any, path: string) => {
     left: e.clientX + "px",
     top: e.clientY + "px",
   };
-  currentTagPath.value = path;
 };
 </script>

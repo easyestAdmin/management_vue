@@ -1,6 +1,7 @@
 import { Breadcrumb } from "@/store/types";
 export const filterBreadCrumb = (path: string, menuList: any) => {
   let paths = path.split("/");
+  //去掉空元素
   paths = paths.filter((item) => item);
   const breadCrumbs: Breadcrumb[] = [];
   paths.forEach((item, index) => {
