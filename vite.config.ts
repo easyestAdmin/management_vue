@@ -22,5 +22,6 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/dev/, ""),
       },
     },
+    port: 8900,
   },
 });

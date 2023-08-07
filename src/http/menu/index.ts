@@ -1,9 +1,20 @@
 import request from "../request";
 import { MenuVo } from "./types/menu.vo";
+//获取菜单列表
 export const getMenuList = (data: any) => {
   return request({
     url: "/menu",
     params: data,
     method: "get",
+  });
+};
+
+//新增菜单
+
+export const addMenu = (data: MenuVo) => {
+  return request({
+    url: "/menu",
+    data,
+    method: "post",
   });
 };
