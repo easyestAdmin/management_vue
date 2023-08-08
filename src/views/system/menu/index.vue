@@ -36,32 +36,34 @@
                 <el-row>
                     <el-col :span="24">
                         <el-form-item label="上级菜单">
-                            <el-input v-model="form.parentId" />
+                            <el-cascader :show-all-levels="false" @change="handleMenuChange" :options="homeStore.menuList"
+                                :props="defaultProps" clearable />
+
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="菜单名称">
-                            <el-input v-model="form.name" />
+                            <el-input v-model="form.name" placeholder="请输入菜单名称" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="组件路径">
-                            <el-input v-model="form.component" />
+                            <el-input v-model="form.component" placeholder="请输入菜单名称" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
                         <el-form-item label="图标">
-                            <el-input v-model="form.icon" />
+                            <el-input v-model="form.icon" placeholder="请选择图标" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="路由地址">
-                            <el-input v-model="form.path" />
+                            <el-input v-model="form.path" placeholder="请输入路由地址" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="排序">
-                            <el-input v-model="form.orderNum" />
+                            <el-input v-model="form.orderNum" type="number" />
                         </el-form-item>
                     </el-col>
 
@@ -70,7 +72,7 @@
             <template #footer>
                 <span class="dialog-footer">
                     <el-button @click="dialogVisible = false">取消</el-button>
-                    <el-button type="primary" @click="dialogVisible = false">
+                    <el-button type="primary" @click="addMenuList">
                         确定
                     </el-button>
                 </span>
@@ -83,10 +85,17 @@
 import { reactive, ref } from "vue"
 import { getMenuList, addMenu } from "@/http/menu"
 import { MenuVo } from "@/http/menu/types/menu.vo"
+import home from "@/store"
+const homeStore = home()
 const queryParams = reactive({
     name: ""
 })
-
+const defaultProps = {
+    children: 'children',
+    label: 'name',
+    value: 'id',
+    checkStrictly: true,
+}
 //表格列表
 const tableData = ref([])
 const handleQuery = async () => {
@@ -112,5 +121,14 @@ const dialogVisible = ref(false)
 
 const handleAdd = () => {
     dialogVisible.value = true
+}
+const addMenuList = async () => {
+    const { data } = await addMenu(form)
+}
+const handleMenuChange = (val: any) => {
+
+
+    form.parentId = val[val.length - 1]
+
 }
 </script>

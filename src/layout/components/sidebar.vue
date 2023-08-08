@@ -4,21 +4,10 @@
       <span v-if="!homeStore.isCollapse">权限管理系统</span>
     </div>
     <el-scrollbar class="wrap-scroll">
-      <el-menu
-        :unique-opened="true"
-        :collapse="homeStore.isCollapse"
-        active-text-color="#ffd04b"
-        @select="getPath"
-        background-color="#545c64"
-        class="el-menu-vertical-demo w-[223px] !border-r-0"
-        :default-active="activeMenu"
-        text-color="#fff"
-      >
-        <sidebaritem
-          v-for="item in homeStore.menuList"
-          :key="item.id"
-          :item="item"
-        />
+      <el-menu :unique-opened="true" :collapse="homeStore.isCollapse" active-text-color="#ffd04b" @select="getPath"
+        background-color="#545c64" class="el-menu-vertical-demo w-[223px] !border-r-0" :default-active="activeMenu"
+        text-color="#fff">
+        <sidebaritem v-for="item in homeStore.menuList" :key="item.id!" :item="item" />
       </el-menu>
     </el-scrollbar>
   </div>
