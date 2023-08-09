@@ -104,6 +104,7 @@ service.interceptors.response.use(
       message: message,
       type: "error",
     });
+    router.push("/login");
     return Promise.reject(error);
   }
 );
