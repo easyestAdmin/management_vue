@@ -18,3 +18,13 @@ export const addMenu = (data: MenuVo) => {
     method: "post",
   });
 };
+
+//更新菜单
+
+export const updateMenu = (data: MenuVo) => {
+  return request({
+    url: "/menu",
+    data,
+    method: "put",
+  });
+};

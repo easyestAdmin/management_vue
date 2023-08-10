@@ -37,7 +37,7 @@
             </el-table-column>
         </el-table>
         <!-- 新增修改对话框 -->
-        <el-dialog v-model="dialogVisible" title="新增菜单" width="40%">
+        <el-dialog v-model="dialogVisible" :title="isUpdate ? '修改菜单' : '新增菜单'" width="40%">
             <el-form :model="form" label-width="120px">
                 <el-row>
                     <el-col :span="24">
@@ -54,7 +54,7 @@
                     </el-col>
                     <el-col :span="12">
                         <el-form-item label="组件路径">
-                            <el-input v-model="form.component" placeholder="请输入菜单名称" />
+                            <el-input v-model="form.component" placeholder="请输入组件路径" />
                         </el-form-item>
                     </el-col>
                     <el-col :span="24">
@@ -95,10 +95,12 @@
 
 <script lang='ts' setup>
 import { reactive, ref } from "vue"
-import { getMenuList, addMenu } from "@/http/menu"
+import { getMenuList, addMenu, updateMenu } from "@/http/menu"
 import { MenuVo } from "@/http/menu/types/menu.vo"
 import selectIcon from "@/components/selecticon/index.vue"
 import home from "@/store"
+import { findParentIds } from "@/utils/getTopMenu"
+import { ElMessage } from "element-plus"
 const showIconView = ref(false)
 const homeStore = home()
 const queryParams = reactive({
@@ -122,6 +124,7 @@ const resetQuery = () => {
 }
 
 //新增
+const isUpdate = ref(false)
 const form = reactive<MenuVo>({
     name: '',
     path: '',
@@ -135,9 +138,25 @@ const dialogVisible = ref(false)
 
 const handleAdd = () => {
     dialogVisible.value = true
+    isUpdate.value = false
 }
 const addMenuList = async () => {
-    const { data } = await addMenu(form)
+    dialogVisible.value = false
+    if (isUpdate.value) {
+        await updateMenu(form)
+        ElMessage({
+            type: "success",
+            message: "修改成功"
+        })
+        handleQuery()
+        return
+    }
+    await addMenu(form)
+    ElMessage({
+        type: "success",
+        message: "新增成功"
+    })
+    handleQuery()
 }
 const handleMenuChange = (val: any) => {
     form.parentId = val[val.length - 1]
@@ -151,6 +170,7 @@ const getMenuName = (menuName: string) => {
 //修改
 const topMenu = ref()
 const handleUpdate = (row: any) => {
+    isUpdate.value = true
     form.name = row.name
     form.path = row.path
     form.parentId = row.parentId
@@ -158,7 +178,7 @@ const handleUpdate = (row: any) => {
     form.orderNum = row.orderNum
     form.icon = row.icon
     form.id = row.id
-    topMenu.value = [row.parentId, row.id]
+    topMenu.value = findParentIds(homeStore.menuList, row.id)
     dialogVisible.value = true
 }
 </script>
